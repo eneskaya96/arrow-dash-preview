@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Arrow Dash — Main Menu</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0A1118;
+    --bg-mid: #121E2B;
+    --surface: #1A2F38;
+    --text-primary: #E8EDF2;
+    --text-secondary: #8B99A8;
+    --gold: #FFD666;
+    --emerald: #4AE68A;
+    --cyan: #5CE0D8;
+    --coral: #FF6B9D;
+    --violet: #A78BFA;
+    --orange: #FF8C42;
+    --red: #FF6B6B;
+    --amber: #FFAB40;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    overflow: hidden;
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* Animated background */
+  .bg-scene {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .moon {
+    position: absolute;
+    top: 60px;
+    left: 40px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #E8EDF2 0%, #C8D0DA 30%, transparent 70%);
+    box-shadow: 0 0 60px 30px rgba(232, 237, 242, 0.08), 0 0 120px 60px rgba(255, 214, 102, 0.04);
+    opacity: 0.7;
+  }
+
+  .tree {
+    position: absolute;
+    bottom: 0;
+    background: #060D12;
+  }
+  .tree-1 {
+    left: -20px; width: 80px; height: 400px;
+    clip-path: polygon(50% 0%, 15% 40%, 0% 100%, 100% 100%, 85% 40%);
+  }
+  .tree-2 {
+    right: -10px; width: 70px; height: 350px;
+    clip-path: polygon(50% 0%, 10% 45%, 0% 100%, 100% 100%, 90% 45%);
+  }
+  .tree-3 {
+    left: 60px; width: 50px; height: 280px;
+    clip-path: polygon(50% 0%, 20% 50%, 0% 100%, 100% 100%, 80% 50%);
+    opacity: 0.6;
+  }
+  .tree-4 {
+    right: 70px; width: 55px; height: 300px;
+    clip-path: polygon(50% 0%, 15% 45%, 0% 100%, 100% 100%, 85% 45%);
+    opacity: 0.5;
+  }
+
+  /* Fireflies */
+  @keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+    25% { transform: translateY(-15px) translateX(8px); opacity: 1; }
+    50% { transform: translateY(-5px) translateX(-5px); opacity: 0.6; }
+    75% { transform: translateY(-20px) translateX(3px); opacity: 0.9; }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 6px 3px rgba(255, 214, 102, 0.3); }
+    50% { box-shadow: 0 0 14px 7px rgba(255, 214, 102, 0.6); }
+  }
+
+  .firefly {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px 4px rgba(255, 214, 102, 0.4);
+    animation: float 4s ease-in-out infinite, pulse-glow 2s ease-in-out infinite;
+  }
+  .ff1 { top: 180px; left: 80px; animation-delay: 0s; }
+  .ff2 { top: 300px; right: 60px; animation-delay: 1.2s; }
+  .ff3 { top: 450px; left: 150px; animation-delay: 0.6s; }
+  .ff4 { top: 550px; right: 120px; animation-delay: 2s; }
+  .ff5 { top: 650px; left: 50px; animation-delay: 1.5s; }
+  .ff6 { top: 250px; left: 280px; animation-delay: 0.8s; }
+  .ff7 { top: 380px; left: 30px; animation-delay: 2.5s; }
+  .ff8 { top: 700px; right: 40px; animation-delay: 3s; }
+
+  .firefly.green { background: var(--emerald); box-shadow: 0 0 8px 4px rgba(74, 230, 138, 0.3); }
+  .firefly.cyan { background: var(--cyan); box-shadow: 0 0 8px 4px rgba(92, 224, 216, 0.3); }
+
+  /* Ground */
+  .ground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    z-index: 1;
+  }
+  .grass {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: #060D12;
+    clip-path: polygon(
+      0% 100%, 0% 60%, 3% 45%, 6% 55%, 9% 35%, 12% 50%, 15% 30%, 18% 48%,
+      21% 25%, 24% 45%, 27% 35%, 30% 50%, 33% 28%, 36% 42%, 39% 32%, 42% 48%,
+      45% 22%, 48% 40%, 51% 30%, 54% 45%, 57% 25%, 60% 42%, 63% 35%, 66% 50%,
+      69% 28%, 72% 44%, 75% 32%, 78% 48%, 81% 24%, 84% 40%, 87% 30%, 90% 45%,
+      93% 35%, 96% 50%, 100% 40%, 100% 100%
+    );
+  }
+
+  .mushroom {
+    position: absolute;
+    bottom: 30px;
+    z-index: 2;
+  }
+  .mushroom-cap {
+    width: 14px;
+    height: 8px;
+    border-radius: 7px 7px 2px 2px;
+    margin: 0 auto;
+  }
+  .mushroom-stem {
+    width: 4px;
+    height: 8px;
+    background: #1A2F38;
+    margin: 0 auto;
+    border-radius: 0 0 2px 2px;
+  }
+  .mushroom-1 { left: 80px; }
+  .mushroom-1 .mushroom-cap { background: var(--emerald); box-shadow: 0 0 8px rgba(74, 230, 138, 0.4); }
+  .mushroom-2 { left: 260px; }
+  .mushroom-2 .mushroom-cap { background: var(--cyan); box-shadow: 0 0 8px rgba(92, 224, 216, 0.4); }
+  .mushroom-3 { left: 170px; }
+  .mushroom-3 .mushroom-cap { background: var(--gold); box-shadow: 0 0 6px rgba(255, 214, 102, 0.3); width: 10px; height: 6px; }
+
+  /* Content */
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    padding: 0 24px;
+  }
+
+  /* Top Status Bar */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 56px 4px 12px;
+    background: linear-gradient(to bottom, rgba(18, 30, 43, 0.9) 0%, transparent 100%);
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .stat-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .stat.hearts .stat-icon { color: var(--red); }
+  .stat.hearts .stat-value { color: var(--red); }
+  .stat.hints .stat-icon { color: var(--amber); }
+  .stat.hints .stat-value { color: var(--amber); }
+  .stat.coins .stat-icon { color: var(--gold); }
+  .stat.coins .stat-value { color: var(--gold); }
+
+  /* Logo */
+  .logo-container {
+    margin-top: 100px;
+    text-align: center;
+  }
+
+  .logo-text {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    color: var(--text-primary);
+    text-shadow: 0 0 40px rgba(255, 214, 102, 0.3), 0 0 80px rgba(255, 214, 102, 0.1);
+    letter-spacing: 2px;
+  }
+
+  .tagline {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* Play Button */
+  @keyframes btn-glow {
+    0%, 100% { box-shadow: 0 0 20px 4px rgba(255, 214, 102, 0.25); }
+    50% { box-shadow: 0 0 30px 8px rgba(255, 214, 102, 0.4); }
+  }
+
+  .play-btn {
+    margin-top: 80px;
+    width: 220px;
+    height: 60px;
+    border-radius: 30px;
+    background: var(--gold);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    animation: btn-glow 3s ease-in-out infinite;
+    transition: transform 0.2s;
+  }
+  .play-btn:hover { transform: scale(1.05); }
+  .play-btn:active { transform: scale(0.97); }
+
+  .play-btn .firefly-icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #0A1118;
+    box-shadow: 0 0 4px 2px rgba(10, 17, 24, 0.3);
+  }
+
+  .play-btn span {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--bg-dark);
+    letter-spacing: 3px;
+  }
+
+  /* Secondary Actions */
+  .secondary-actions {
+    margin-top: 40px;
+    display: flex;
+    gap: 32px;
+  }
+
+  .action-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .action-circle:hover {
+    transform: scale(1.1);
+  }
+
+  .action-circle.daily {
+    border-color: var(--emerald);
+    box-shadow: 0 0 12px rgba(74, 230, 138, 0.2);
+  }
+  .action-circle.daily:hover { box-shadow: 0 0 20px rgba(74, 230, 138, 0.4); }
+  .action-circle.daily svg { color: var(--emerald); }
+
+  .action-circle.shop {
+    border-color: var(--violet);
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.2);
+  }
+  .action-circle.shop:hover { box-shadow: 0 0 20px rgba(167, 139, 250, 0.4); }
+  .action-circle.shop svg { color: var(--violet); }
+
+  .action-circle.settings {
+    border-color: var(--text-secondary);
+    box-shadow: 0 0 8px rgba(139, 153, 168, 0.1);
+  }
+  .action-circle.settings:hover { box-shadow: 0 0 16px rgba(139, 153, 168, 0.3); }
+  .action-circle.settings svg { color: var(--text-secondary); }
+
+  .action-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .action-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+
+<div class="bg-scene">
+  <div class="moon"></div>
+  <div class="tree tree-1"></div>
+  <div class="tree tree-2"></div>
+  <div class="tree tree-3"></div>
+  <div class="tree tree-4"></div>
+
+  <div class="firefly ff1"></div>
+  <div class="firefly ff2 green"></div>
+  <div class="firefly ff3"></div>
+  <div class="firefly ff4 cyan"></div>
+  <div class="firefly ff5"></div>
+  <div class="firefly ff6"></div>
+  <div class="firefly ff7 green"></div>
+  <div class="firefly ff8"></div>
+
+  <div class="ground">
+    <div class="mushroom mushroom-1"><div class="mushroom-cap"></div><div class="mushroom-stem"></div></div>
+    <div class="mushroom mushroom-2"><div class="mushroom-cap"></div><div class="mushroom-stem"></div></div>
+    <div class="mushroom mushroom-3"><div class="mushroom-cap"></div><div class="mushroom-stem"></div></div>
+    <div class="grass"></div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="status-bar">
+    <div class="stat hearts">
+      <div class="stat-icon">&hearts;</div>
+      <div class="stat-value">5</div>
+    </div>
+    <div class="stat hints">
+      <div class="stat-icon">&#9728;</div>
+      <div class="stat-value">3</div>
+    </div>
+    <div class="stat coins">
+      <div class="stat-icon">&#9679;</div>
+      <div class="stat-value">1,250</div>
+    </div>
+  </div>
+
+  <div class="logo-container">
+    <div class="logo-text">Arrow Dash</div>
+    <div class="tagline">Where puzzles glow</div>
+  </div>
+
+  <button class="play-btn">
+    <div class="firefly-icon"></div>
+    <span>PLAY</span>
+  </button>
+
+  <div class="secondary-actions">
+    <div class="action-wrapper">
+      <div class="action-circle daily">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><text x="12" y="18" text-anchor="middle" font-size="8" fill="currentColor" stroke="none">7</text></svg>
+      </div>
+      <div class="action-label">Daily</div>
+    </div>
+    <div class="action-wrapper">
+      <div class="action-circle shop">
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9"/></svg>
+      </div>
+      <div class="action-label">Shop</div>
+    </div>
+    <div class="action-wrapper">
+      <div class="action-circle settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <div class="action-label">Settings</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

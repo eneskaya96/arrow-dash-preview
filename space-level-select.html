@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Arrow Dash — Space Level Select</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0A0B1E;
+    --surface: #111328;
+    --text: #E8EDF2;
+    --text-dim: #7B7FA3;
+    --gold: #FFD666;
+    --emerald: #4AE68A;
+    --cyan: #5CE0D8;
+    --violet: #A78BFA;
+    --locked: #2A2C50;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Dense star field */
+  .stars { position: absolute; inset: 0; z-index: 0; }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.7; }
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  /* Nebula clouds */
+  .nebula {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: 0;
+  }
+  .neb-1 { top: 100px; left: -60px; width: 200px; height: 200px; background: var(--violet); opacity: 0.06; }
+  .neb-2 { top: 350px; right: -80px; width: 180px; height: 180px; background: var(--cyan); opacity: 0.04; }
+  .neb-3 { bottom: 150px; left: 50px; width: 150px; height: 150px; background: #FF6B9D; opacity: 0.03; }
+
+  /* Distant gas giant */
+  .gas-giant {
+    position: absolute;
+    bottom: 100px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 40%, #2A2050 0%, #151030 60%, #0A0B1E 100%);
+    opacity: 0.25;
+    z-index: 0;
+  }
+  .gas-giant::after {
+    content: '';
+    position: absolute;
+    top: 38%;
+    left: -15px;
+    right: -15px;
+    height: 6px;
+    background: linear-gradient(to right, transparent, rgba(167, 139, 250, 0.1), rgba(92, 224, 216, 0.08), transparent);
+    transform: rotate(-8deg);
+    border-radius: 50%;
+  }
+
+  /* Header */
+  .header {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 56px 20px 16px;
+    background: linear-gradient(to bottom, rgba(17, 19, 40, 0.95) 0%, transparent 100%);
+  }
+
+  .back-btn svg {
+    width: 24px; height: 24px;
+    fill: none; stroke: var(--text); stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .header-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--gold);
+  }
+
+  .star-count {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--gold);
+  }
+
+  /* Scrollable path area */
+  .path-area {
+    position: relative;
+    z-index: 10;
+    height: calc(100% - 180px);
+    overflow-y: auto;
+    padding: 20px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  .path-area::-webkit-scrollbar { display: none; }
+
+  .path-container {
+    position: relative;
+    width: 100%;
+    min-height: 1200px;
+    padding: 0 30px;
+  }
+
+  /* Dotted path line */
+  .path-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    z-index: 1;
+  }
+
+  /* SVG zigzag path */
+  .path-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Level nodes */
+  .level-node {
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .level-node:hover { transform: scale(1.1); }
+
+  .planet-node {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    position: relative;
+  }
+
+  /* Completed nodes */
+  .planet-node.completed {
+    background: radial-gradient(circle at 35% 35%, #FFE699 0%, var(--gold) 60%, #D4A830 100%);
+    color: var(--bg);
+    box-shadow: 0 0 16px 4px rgba(255, 214, 102, 0.25), 0 0 32px 8px rgba(255, 214, 102, 0.1);
+  }
+
+  .planet-node.completed::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 214, 102, 0.3);
+  }
+
+  /* Current node */
+  @keyframes current-pulse {
+    0%, 100% { box-shadow: 0 0 16px 4px rgba(255, 214, 102, 0.3), 0 0 32px 8px rgba(255, 214, 102, 0.15); }
+    50% { box-shadow: 0 0 24px 8px rgba(255, 214, 102, 0.5), 0 0 48px 16px rgba(255, 214, 102, 0.25); }
+  }
+
+  .planet-node.current {
+    width: 52px;
+    height: 52px;
+    font-size: 16px;
+    font-weight: 700;
+    background: radial-gradient(circle at 35% 35%, #FFF0C0 0%, var(--gold) 50%, #D4A830 100%);
+    color: var(--bg);
+    animation: current-pulse 2.5s ease-in-out infinite;
+  }
+
+  .planet-node.current::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 214, 102, 0.4);
+  }
+
+  /* Locked nodes */
+  .planet-node.locked {
+    background: radial-gradient(circle at 35% 35%, #3A3C60 0%, var(--locked) 60%, #1A1C3A 100%);
+    color: #4A4C70;
+    border: 1px solid rgba(42, 44, 80, 0.5);
+  }
+
+  .lock-icon {
+    font-size: 12px;
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    opacity: 0.5;
+  }
+
+  /* Stars below completed nodes */
+  .mini-stars {
+    display: flex;
+    gap: 2px;
+  }
+  .mini-star {
+    font-size: 10px;
+    color: var(--gold);
+  }
+  .mini-star.empty {
+    color: #2A2C50;
+  }
+
+  /* Milestone marker */
+  .milestone {
+    position: absolute;
+    z-index: 4;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0.6;
+  }
+
+  /* Decorative elements */
+  .deco-comet {
+    position: absolute;
+    z-index: 3;
+    width: 30px;
+    height: 2px;
+    border-radius: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 214, 102, 0.3));
+    transform: rotate(-25deg);
+  }
+
+  .deco-galaxy {
+    position: absolute;
+    z-index: 3;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(167, 139, 250, 0.15) 0%, transparent 70%);
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 80px;
+    background: var(--surface);
+    border-top: 1px solid rgba(30, 34, 85, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: 16px;
+    z-index: 20;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .nav-item svg {
+    width: 24px; height: 24px;
+    fill: none; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .nav-item.active svg { stroke: var(--gold); }
+  .nav-item.inactive svg { stroke: var(--text-dim); }
+  .nav-label { font-size: 10px; font-weight: 500; }
+  .nav-item.active .nav-label { color: var(--gold); }
+  .nav-item.inactive .nav-label { color: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<div class="stars">
+  <!-- Dense star field -->
+  <div class="star" style="top:2%;left:10%;width:2px;height:2px;animation-delay:0s"></div>
+  <div class="star" style="top:5%;left:35%;width:1px;height:1px;animation-delay:0.5s"></div>
+  <div class="star" style="top:8%;right:15%;width:2px;height:2px;animation-delay:1.2s"></div>
+  <div class="star" style="top:12%;left:60%;width:1px;height:1px;animation-delay:0.8s"></div>
+  <div class="star" style="top:15%;left:5%;width:2px;height:2px;animation-delay:2s"></div>
+  <div class="star" style="top:20%;right:30%;width:1px;height:1px;animation-delay:1.5s"></div>
+  <div class="star" style="top:25%;left:42%;width:2px;height:2px;animation-delay:0.3s"></div>
+  <div class="star" style="top:30%;left:78%;width:1px;height:1px;animation-delay:2.3s"></div>
+  <div class="star" style="top:35%;left:18%;width:2px;height:2px;animation-delay:1.1s"></div>
+  <div class="star" style="top:40%;right:8%;width:1px;height:1px;animation-delay:0.7s"></div>
+  <div class="star" style="top:45%;left:55%;width:2px;height:2px;animation-delay:1.8s"></div>
+  <div class="star" style="top:50%;left:28%;width:1px;height:1px;animation-delay:2.6s"></div>
+  <div class="star" style="top:55%;right:22%;width:2px;height:2px;animation-delay:0.4s"></div>
+  <div class="star" style="top:60%;left:68%;width:1px;height:1px;animation-delay:1.4s"></div>
+  <div class="star" style="top:65%;left:12%;width:2px;height:2px;animation-delay:2.1s"></div>
+  <div class="star" style="top:70%;right:38%;width:1px;height:1px;animation-delay:0.9s"></div>
+  <div class="star" style="top:75%;left:48%;width:2px;height:2px;animation-delay:1.6s"></div>
+  <div class="star" style="top:80%;left:82%;width:1px;height:1px;animation-delay:2.4s"></div>
+  <div class="star" style="top:85%;left:22%;width:2px;height:2px;animation-delay:0.2s"></div>
+  <div class="star" style="top:90%;right:12%;width:1px;height:1px;animation-delay:1.3s"></div>
+  <div class="star" style="top:95%;left:55%;width:2px;height:2px;animation-delay:2.7s"></div>
+  <div class="star" style="top:3%;left:88%;width:1px;height:1px;animation-delay:0.6s"></div>
+  <div class="star" style="top:18%;left:92%;width:2px;height:2px;animation-delay:1.9s"></div>
+  <div class="star" style="top:48%;left:3%;width:1px;height:1px;animation-delay:2.2s"></div>
+</div>
+
+<div class="nebula neb-1"></div>
+<div class="nebula neb-2"></div>
+<div class="nebula neb-3"></div>
+<div class="gas-giant"></div>
+
+<div class="header">
+  <div class="back-btn">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+  </div>
+  <div class="header-title">Nebula Sector</div>
+  <div class="star-count">
+    <span>&#9733;</span>
+    <span>67 / 120</span>
+  </div>
+</div>
+
+<div class="path-area">
+  <div class="path-container">
+
+    <!-- SVG zigzag dotted path -->
+    <svg class="path-svg" viewBox="0 0 333 1200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 90 30 Q 90 60 140 80 Q 240 120 260 150 Q 280 180 230 210 Q 140 260 100 290 Q 70 310 120 340 Q 210 380 250 410 Q 280 430 220 470 Q 140 510 110 540 Q 80 560 140 590 Q 230 630 250 660 Q 270 690 210 720 Q 130 760 100 790 Q 75 810 130 840 Q 220 880 250 910 Q 275 935 210 960 Q 130 1000 110 1030 Q 85 1060 140 1090 Q 230 1130 260 1160"
+            stroke="rgba(255,214,102,0.15)" stroke-width="2" stroke-dasharray="6 8" fill="none"/>
+    </svg>
+
+    <!-- Completed levels (1-12) — zigzag positions -->
+    <div class="level-node" style="top:15px;left:68px">
+      <div class="planet-node completed">1</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span></div>
+    </div>
+
+    <div class="level-node" style="top:65px;left:140px">
+      <div class="planet-node completed">2</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span></div>
+    </div>
+
+    <div class="level-node" style="top:115px;left:220px">
+      <div class="planet-node completed">3</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star empty">&#9733;</span></div>
+    </div>
+
+    <div class="level-node" style="top:175px;left:240px">
+      <div class="planet-node completed">4</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span></div>
+    </div>
+
+    <div class="level-node" style="top:240px;left:160px">
+      <div class="planet-node completed">5</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star empty">&#9733;</span></div>
+    </div>
+
+    <!-- Milestone -->
+    <div class="milestone" style="top:280px;left:75px">Sector Alpha</div>
+    <div class="deco-comet" style="top:270px;right:50px"></div>
+
+    <div class="level-node" style="top:305px;left:80px">
+      <div class="planet-node completed">6</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span></div>
+    </div>
+
+    <div class="level-node" style="top:355px;left:130px">
+      <div class="planet-node completed">7</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star empty">&#9733;</span><span class="mini-star empty">&#9733;</span></div>
+    </div>
+
+    <div class="level-node" style="top:400px;left:220px">
+      <div class="planet-node completed">8</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span></div>
+    </div>
+
+    <div class="level-node" style="top:460px;left:240px">
+      <div class="planet-node completed">9</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star empty">&#9733;</span></div>
+    </div>
+
+    <div class="deco-galaxy" style="top:480px;left:60px"></div>
+
+    <div class="level-node" style="top:520px;left:150px">
+      <div class="planet-node completed">10</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span></div>
+    </div>
+
+    <!-- Milestone -->
+    <div class="milestone" style="top:565px;right:60px">Sector Beta</div>
+
+    <div class="level-node" style="top:590px;left:80px">
+      <div class="planet-node completed">11</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star empty">&#9733;</span></div>
+    </div>
+
+    <div class="level-node" style="top:645px;left:160px">
+      <div class="planet-node completed">12</div>
+      <div class="mini-stars"><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span><span class="mini-star">&#9733;</span></div>
+    </div>
+
+    <!-- Current level -->
+    <div class="level-node" style="top:710px;left:220px">
+      <div class="planet-node current">13</div>
+    </div>
+
+    <div class="deco-comet" style="top:720px;left:40px;transform:rotate(-35deg)"></div>
+
+    <!-- Locked levels -->
+    <div class="level-node" style="top:780px;left:190px">
+      <div class="planet-node locked">14<span class="lock-icon">&#128274;</span></div>
+    </div>
+
+    <div class="level-node" style="top:840px;left:110px">
+      <div class="planet-node locked">15<span class="lock-icon">&#128274;</span></div>
+    </div>
+
+    <div class="level-node" style="top:900px;left:70px">
+      <div class="planet-node locked">16<span class="lock-icon">&#128274;</span></div>
+    </div>
+
+    <div class="level-node" style="top:955px;left:140px">
+      <div class="planet-node locked">17<span class="lock-icon">&#128274;</span></div>
+    </div>
+
+    <div class="deco-galaxy" style="top:960px;right:50px"></div>
+
+    <div class="level-node" style="top:1010px;left:230px">
+      <div class="planet-node locked">18<span class="lock-icon">&#128274;</span></div>
+    </div>
+
+    <div class="level-node" style="top:1070px;left:200px">
+      <div class="planet-node locked">19<span class="lock-icon">&#128274;</span></div>
+    </div>
+
+    <div class="level-node" style="top:1130px;left:130px">
+      <div class="planet-node locked">20<span class="lock-icon">&#128274;</span></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-item inactive">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10"/></svg>
+    <span class="nav-label">Worlds</span>
+  </div>
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+    <span class="nav-label">Levels</span>
+  </div>
+  <div class="nav-item inactive">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="nav-label">Daily</span>
+  </div>
+  <div class="nav-item inactive">
+    <svg viewBox="0 0 24 24"><polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9"/></svg>
+    <span class="nav-label">Shop</span>
+  </div>
+</div>
+
+</body>
+</html>

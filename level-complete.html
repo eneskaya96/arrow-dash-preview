@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Arrow Dash — Level Complete</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0A1118;
+    --bg-mid: #121E2B;
+    --surface: #1A2F38;
+    --text-primary: #E8EDF2;
+    --text-secondary: #8B99A8;
+    --gold: #FFD666;
+    --emerald: #4AE68A;
+    --cyan: #5CE0D8;
+    --coral: #FF6B9D;
+    --violet: #A78BFA;
+    --red: #FF6B6B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Dark overlay */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 17, 24, 0.85);
+    z-index: 5;
+  }
+
+  /* Firefly burst animation */
+  @keyframes burst {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  .burst-firefly {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    z-index: 6;
+    animation: burst 2s ease-out forwards;
+  }
+
+  .bf1 { top: 50%; left: 50%; box-shadow: 0 0 8px var(--gold); animation: burst 2.5s ease-out forwards; --tx: -120px; --ty: -180px; animation-name: burst1; }
+  .bf2 { top: 50%; left: 50%; background: var(--emerald); box-shadow: 0 0 8px var(--emerald); animation-name: burst2; animation-duration: 2.2s; }
+  .bf3 { top: 50%; left: 50%; box-shadow: 0 0 8px var(--gold); animation-name: burst3; animation-duration: 2.8s; }
+  .bf4 { top: 50%; left: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); animation-name: burst4; animation-duration: 2s; }
+  .bf5 { top: 50%; left: 50%; box-shadow: 0 0 8px var(--gold); animation-name: burst5; animation-duration: 2.6s; }
+  .bf6 { top: 50%; left: 50%; background: var(--coral); box-shadow: 0 0 8px var(--coral); animation-name: burst6; animation-duration: 2.3s; }
+  .bf7 { top: 50%; left: 50%; background: var(--emerald); box-shadow: 0 0 8px var(--emerald); animation-name: burst7; animation-duration: 2.7s; }
+  .bf8 { top: 50%; left: 50%; box-shadow: 0 0 8px var(--gold); animation-name: burst8; animation-duration: 2.1s; }
+
+  @keyframes burst1 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(-120px,-180px) scale(0.3); opacity:0; } }
+  @keyframes burst2 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(140px,-150px) scale(0.3); opacity:0; } }
+  @keyframes burst3 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(-80px,160px) scale(0.3); opacity:0; } }
+  @keyframes burst4 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(100px,140px) scale(0.3); opacity:0; } }
+  @keyframes burst5 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(-160px,40px) scale(0.3); opacity:0; } }
+  @keyframes burst6 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(170px,20px) scale(0.3); opacity:0; } }
+  @keyframes burst7 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(-40px,-200px) scale(0.3); opacity:0; } }
+  @keyframes burst8 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(60px,-190px) scale(0.3); opacity:0; } }
+
+  /* Modal card */
+  .modal {
+    position: relative;
+    z-index: 10;
+    width: 320px;
+    background: var(--bg-mid);
+    border-radius: 28px;
+    padding: 32px 28px 28px;
+    text-align: center;
+    border: 1px solid rgba(255, 214, 102, 0.1);
+    box-shadow: 0 0 60px rgba(255, 214, 102, 0.06), 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .level-label {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .complete-text {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(255, 214, 102, 0.2);
+    margin-bottom: 24px;
+  }
+
+  /* Stars */
+  @keyframes star-pop {
+    0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+    60% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .stars-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .star {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    animation: star-pop 0.5s ease-out forwards;
+    opacity: 0;
+  }
+  .star:nth-child(1) { animation-delay: 0.3s; }
+  .star:nth-child(2) { animation-delay: 0.6s; }
+  .star:nth-child(3) { animation-delay: 0.9s; }
+
+  .star.filled { color: var(--gold); text-shadow: 0 0 12px rgba(255, 214, 102, 0.5); }
+  .star.empty { color: #2A3F48; }
+
+  /* Stats */
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 28px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(42, 63, 72, 0.4);
+    border-bottom: 1px solid rgba(42, 63, 72, 0.4);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--text-primary);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .stat-percent {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--emerald);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    border-radius: 28px;
+    background: var(--gold);
+    color: var(--bg-dark);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: transform 0.2s;
+    box-shadow: 0 0 20px rgba(255, 214, 102, 0.2);
+  }
+  .btn-primary:hover { transform: scale(1.03); }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 12px;
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1.5px solid rgba(42, 63, 72, 0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .btn-secondary:hover { border-color: var(--text-secondary); }
+
+  .bonus-label {
+    font-size: 11px;
+    color: var(--emerald);
+  }
+
+  .share-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .share-btn {
+    padding: 8px 16px;
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .share-btn:hover { color: var(--text-primary); background: rgba(42, 63, 72, 0.8); }
+
+  /* Coin reward */
+  .reward-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .reward-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(255, 214, 102, 0.3);
+  }
+
+  .reward-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--gold);
+  }
+
+  .reward-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<!-- Burst fireflies -->
+<div class="burst-firefly bf1"></div>
+<div class="burst-firefly bf2"></div>
+<div class="burst-firefly bf3"></div>
+<div class="burst-firefly bf4"></div>
+<div class="burst-firefly bf5"></div>
+<div class="burst-firefly bf6"></div>
+<div class="burst-firefly bf7"></div>
+<div class="burst-firefly bf8"></div>
+
+<div class="modal">
+  <div class="level-label">Level 14</div>
+  <div class="complete-text">Complete!</div>
+
+  <div class="stars-row">
+    <div class="star filled">&#9733;</div>
+    <div class="star filled">&#9733;</div>
+    <div class="star empty">&#9733;</div>
+  </div>
+
+  <div class="reward-row">
+    <div class="reward-icon"></div>
+    <div class="reward-text">+25</div>
+    <div class="reward-label">coins earned</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">0:42</div>
+      <div class="stat-label">Time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">14</div>
+      <div class="stat-label">Moves</div>
+    </div>
+    <div class="stat">
+      <div class="stat-percent">78%</div>
+      <div class="stat-label">Solved by</div>
+    </div>
+  </div>
+
+  <button class="btn-primary">NEXT LEVEL</button>
+
+  <button class="btn-secondary">
+    <span>&#9654; Watch Ad for</span>
+    <span class="bonus-label">+15 bonus coins</span>
+  </button>
+
+  <div class="share-row">
+    <button class="share-btn">Share</button>
+    <button class="share-btn">Replay</button>
+  </div>
+</div>
+
+</body>
+</html>

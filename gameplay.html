@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Arrow Dash — Gameplay (Level 14)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0A1118;
+    --bg-mid: #121E2B;
+    --surface: #1A2F38;
+    --grid-line: #2A3F48;
+    --text-primary: #E8EDF2;
+    --text-secondary: #8B99A8;
+    --gold: #FFD666;
+    --emerald: #4AE68A;
+    --cyan: #5CE0D8;
+    --coral: #FF6B9D;
+    --violet: #A78BFA;
+    --red: #FF6B6B;
+    --amber: #FFAB40;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Background scene */
+  .bg-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(170deg, #0E1720 0%, var(--bg-dark) 40%, #080E14 100%);
+  }
+
+  .bg-moonlight {
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232, 237, 242, 0.03) 0%, transparent 70%);
+  }
+
+  @keyframes float-bg {
+    0%, 100% { transform: translateY(0); opacity: 0.2; }
+    50% { transform: translateY(-8px); opacity: 0.5; }
+  }
+
+  .bg-firefly {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 6px 3px rgba(255, 214, 102, 0.2);
+    animation: float-bg 5s ease-in-out infinite;
+  }
+
+  /* World label */
+  .world-label {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    opacity: 0.5;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 20;
+  }
+
+  /* Top HUD */
+  .top-hud {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 62px 20px 14px;
+    background: linear-gradient(to bottom, rgba(18, 30, 43, 0.95) 0%, rgba(18, 30, 43, 0.6) 80%, transparent 100%);
+    border-radius: 0 0 20px 20px;
+  }
+
+  .hud-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .back-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .level-label {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--text-primary);
+  }
+
+  .hearts {
+    display: flex;
+    gap: 6px;
+  }
+
+  .heart {
+    font-size: 20px;
+    line-height: 1;
+  }
+  .heart.active { color: var(--red); }
+  .heart.empty { color: #2A3F48; }
+
+  .pause-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* Puzzle Grid */
+  .grid-container {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    padding: 0 20px;
+  }
+
+  .puzzle-grid {
+    width: 340px;
+    height: 340px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 6px;
+    gap: 2px;
+    box-shadow: 0 0 40px 4px rgba(255, 214, 102, 0.04), 0 0 80px 8px rgba(255, 214, 102, 0.02);
+    border: 1px solid rgba(42, 63, 72, 0.6);
+  }
+
+  .cell {
+    background: rgba(10, 17, 24, 0.6);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .cell.empty {
+    background: rgba(10, 17, 24, 0.4);
+  }
+
+  /* Arrow/Firefly elements */
+  @keyframes breathe {
+    0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 4px var(--glow-color)); }
+    50% { opacity: 1; filter: drop-shadow(0 0 10px var(--glow-color)); }
+  }
+
+  .arrow {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: breathe 3s ease-in-out infinite;
+  }
+
+  .arrow svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  .arrow.gold { --glow-color: rgba(255, 214, 102, 0.5); color: var(--gold); }
+  .arrow.emerald { --glow-color: rgba(74, 230, 138, 0.5); color: var(--emerald); }
+  .arrow.coral { --glow-color: rgba(255, 107, 157, 0.5); color: var(--coral); }
+  .arrow.cyan { --glow-color: rgba(92, 224, 216, 0.5); color: var(--cyan); }
+
+  .arrow .firefly-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px 4px var(--glow-color);
+  }
+
+  /* Tappable highlight */
+  .arrow.tappable {
+    animation: breathe 1.5s ease-in-out infinite;
+  }
+  .arrow.tappable svg {
+    filter: drop-shadow(0 0 6px var(--glow-color));
+  }
+
+  .cell.tappable {
+    background: rgba(255, 214, 102, 0.06);
+    border: 1px solid rgba(255, 214, 102, 0.15);
+  }
+
+  /* Direction transforms */
+  .arrow.up svg { transform: rotate(-90deg); }
+  .arrow.down svg { transform: rotate(90deg); }
+  .arrow.left svg { transform: rotate(180deg); }
+  .arrow.right svg { transform: rotate(0deg); }
+
+  /* Bottom action bar */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 16px 40px 40px;
+    background: linear-gradient(to top, rgba(18, 30, 43, 0.95) 0%, rgba(18, 30, 43, 0.6) 80%, transparent 100%);
+    border-radius: 20px 20px 0 0;
+  }
+
+  .action-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .action-btn:hover { transform: scale(1.1); }
+
+  .action-btn.hint {
+    border-color: var(--amber);
+    box-shadow: 0 0 10px rgba(255, 171, 64, 0.15);
+  }
+  .action-btn.hint svg { color: var(--amber); }
+
+  .action-btn.undo {
+    border-color: var(--text-primary);
+    box-shadow: 0 0 8px rgba(232, 237, 242, 0.08);
+  }
+  .action-btn.undo svg { color: var(--text-primary); }
+
+  .action-btn.zoom {
+    border-color: var(--text-secondary);
+    box-shadow: 0 0 6px rgba(139, 153, 168, 0.08);
+  }
+  .action-btn.zoom svg { color: var(--text-secondary); }
+
+  .badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--bg-mid);
+    border: 1.5px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .action-btn.hint .badge { border-color: var(--amber); color: var(--amber); }
+  .action-btn.undo .badge { border-color: var(--text-primary); color: var(--text-primary); }
+
+  .action-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  .action-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Grass bottom decoration */
+  .grass-bottom {
+    position: absolute;
+    bottom: 90px;
+    left: 0;
+    right: 0;
+    height: 30px;
+    z-index: 5;
+    opacity: 0.3;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-scene">
+  <div class="bg-moonlight"></div>
+  <div class="bg-firefly" style="top:200px;left:30px;animation-delay:0s"></div>
+  <div class="bg-firefly" style="top:400px;right:25px;animation-delay:1.5s"></div>
+  <div class="bg-firefly" style="top:600px;left:60px;animation-delay:2.8s"></div>
+  <div class="bg-firefly" style="top:300px;right:50px;animation-delay:0.7s"></div>
+  <div class="bg-firefly" style="top:500px;left:350px;animation-delay:2s"></div>
+</div>
+
+<div class="world-label">Moonlit Meadow</div>
+
+<div class="top-hud">
+  <div class="hud-left">
+    <div class="back-btn">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </div>
+    <div class="level-label">Level 14</div>
+  </div>
+  <div class="hearts">
+    <span class="heart active">&hearts;</span>
+    <span class="heart active">&hearts;</span>
+    <span class="heart empty">&hearts;</span>
+  </div>
+  <div class="pause-btn">
+    <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+  </div>
+</div>
+
+<div class="grid-container">
+  <div class="puzzle-grid">
+    <!-- Row 1 -->
+    <div class="cell"><div class="arrow gold right" style="animation-delay:0.2s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+    <div class="cell"><div class="arrow emerald down" style="animation-delay:0.8s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell tappable"><div class="arrow gold right tappable" style="animation-delay:0.4s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+
+    <!-- Row 2 -->
+    <div class="cell empty"></div>
+    <div class="cell"><div class="arrow coral left" style="animation-delay:1.2s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+    <div class="cell"><div class="arrow cyan up" style="animation-delay:0.6s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell"><div class="arrow gold down" style="animation-delay:1.8s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+
+    <!-- Row 3 -->
+    <div class="cell"><div class="arrow emerald right" style="animation-delay:2.1s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell"><div class="arrow coral up" style="animation-delay:1.4s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+    <div class="cell"><div class="arrow cyan left" style="animation-delay:0.9s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+
+    <!-- Row 4 -->
+    <div class="cell empty"></div>
+    <div class="cell"><div class="arrow gold up" style="animation-delay:1.6s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell"><div class="arrow emerald left" style="animation-delay:2.4s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+    <div class="cell"><div class="arrow coral down" style="animation-delay:0.3s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+
+    <!-- Row 5 -->
+    <div class="cell"><div class="arrow cyan right" style="animation-delay:2.7s"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+
+    <!-- Row 6 -->
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div class="action-wrapper">
+    <div class="action-btn hint">
+      <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 4 12.7V17a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1H10a1 1 0 0 1-1-1v-2.3A7 7 0 0 1 12 2z"/></svg>
+      <div class="badge">2</div>
+    </div>
+    <div class="action-label">Hint</div>
+  </div>
+  <div class="action-wrapper">
+    <div class="action-btn undo">
+      <svg viewBox="0 0 24 24"><path d="M3 7v6h6M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6.69 3L3 13"/></svg>
+      <div class="badge">3</div>
+    </div>
+    <div class="action-label">Undo</div>
+  </div>
+  <div class="action-wrapper">
+    <div class="action-btn zoom">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6M11 8v6"/></svg>
+    </div>
+    <div class="action-label">Zoom</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arrow Dash — UI Mockups</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0A1118;
+    color: #E8EDF2;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 8px;
+    text-shadow: 0 0 40px rgba(255, 214, 102, 0.2);
+  }
+
+  .tagline {
+    text-align: center;
+    color: #8B99A8;
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #8B99A8;
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .screen-card {
+    background: #121E2B;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(42, 63, 72, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .screen-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(255, 214, 102, 0.08);
+    border-color: rgba(255, 214, 102, 0.2);
+  }
+
+  .screen-preview {
+    width: 100%;
+    height: 400px;
+    border: none;
+    pointer-events: none;
+    transform: scale(0.75);
+    transform-origin: top center;
+    width: 133.33%;
+    margin-left: -16.66%;
+    height: 533px;
+  }
+
+  .preview-wrapper {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    background: #0A1118;
+  }
+
+  .screen-info {
+    padding: 16px 20px 20px;
+  }
+
+  .screen-name {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .screen-desc {
+    font-size: 13px;
+    color: #8B99A8;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+  }
+
+  .badge.gold { background: rgba(255, 214, 102, 0.15); color: #FFD666; }
+  .badge.emerald { background: rgba(74, 230, 138, 0.15); color: #4AE68A; }
+  .badge.coral { background: rgba(255, 107, 157, 0.15); color: #FF6B9D; }
+  .badge.violet { background: rgba(167, 139, 250, 0.15); color: #A78BFA; }
+  .badge.cyan { background: rgba(92, 224, 216, 0.15); color: #5CE0D8; }
+
+  .color-palette {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 32px 0 48px;
+    flex-wrap: wrap;
+  }
+
+  .color-swatch {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .color-swatch:hover { transform: scale(1.15); }
+
+  .color-swatch::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: #8B99A8;
+    white-space: nowrap;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(42, 63, 72, 0.3);
+    color: #8B99A8;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Arrow Dash</h1>
+  <p class="tagline">Where puzzles glow</p>
+  <p class="subtitle">Cosmic Space Theme — UI/UX Mockups</p>
+
+  <div class="color-palette">
+    <div class="color-swatch" style="background:#0A0B1E;border:1px solid #1E2255" data-label="Space"></div>
+    <div class="color-swatch" style="background:#111328" data-label="Void"></div>
+    <div class="color-swatch" style="background:#FFD666" data-label="Gold"></div>
+    <div class="color-swatch" style="background:#4AE68A" data-label="Emerald"></div>
+    <div class="color-swatch" style="background:#5CE0D8" data-label="Cyan"></div>
+    <div class="color-swatch" style="background:#FF6B9D" data-label="Coral"></div>
+    <div class="color-swatch" style="background:#A78BFA" data-label="Violet"></div>
+    <div class="color-swatch" style="background:#FF8C42" data-label="Orange"></div>
+  </div>
+
+  <h2 style="font-family:'Quicksand',sans-serif;font-weight:700;font-size:20px;margin-bottom:24px;color:#A78BFA">Cosmic Theme</h2>
+
+  <div class="screens-grid">
+
+    <a class="screen-card" href="space-arrows.html">
+      <div class="preview-wrapper">
+        <iframe class="screen-preview" src="space-arrows.html" loading="lazy"></iframe>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Energy Beam Arrows</div>
+        <div class="screen-desc">6 cosmic energy beam designs — Solar Flare, Nebula Plasma, Cryo Crystal, Supernova, Dark Matter, Solar Wind</div>
+        <span class="badge violet">ARROW DESIGNS</span>
+      </div>
+    </a>
+
+    <a class="screen-card" href="space-gameplay.html">
+      <div class="preview-wrapper">
+        <iframe class="screen-preview" src="space-gameplay.html" loading="lazy"></iframe>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Space Gameplay — Level 14</div>
+        <div class="screen-desc">Holographic grid with energy beams, nebula background, HUD, action bar</div>
+        <span class="badge gold">CORE SCREEN</span>
+      </div>
+    </a>
+
+    <a class="screen-card" href="space-level-select.html">
+      <div class="preview-wrapper">
+        <iframe class="screen-preview" src="space-level-select.html" loading="lazy"></iframe>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Star Path — Level Select</div>
+        <div class="screen-desc">Zigzag path through star field, planet nodes, sector milestones</div>
+        <span class="badge cyan">NAVIGATION</span>
+      </div>
+    </a>
+
+    <h2 style="font-family:'Quicksand',sans-serif;font-weight:700;font-size:20px;margin:24px 0;color:#8B99A8;grid-column:1/-1">Earlier Concepts</h2>
+
+    <a class="screen-card" href="main-menu.html">
+      <div class="preview-wrapper">
+        <iframe class="screen-preview" src="main-menu.html" loading="lazy"></iframe>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Main Menu (Forest)</div>
+        <div class="screen-desc">Original forest theme — archived</div>
+        <span class="badge gold">ARCHIVED</span>
+      </div>
+    </a>
+
+    <a class="screen-card" href="gameplay.html">
+      <div class="preview-wrapper">
+        <iframe class="screen-preview" src="gameplay.html" loading="lazy"></iframe>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Gameplay — Level 14</div>
+        <div class="screen-desc">Core puzzle screen with 6x6 grid, firefly arrows, HUD, action bar</div>
+        <span class="badge emerald">CORE SCREEN</span>
+      </div>
+    </a>
+
+    <a class="screen-card" href="world-map.html">
+      <div class="preview-wrapper">
+        <iframe class="screen-preview" src="world-map.html" loading="lazy"></iframe>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">World Map</div>
+        <div class="screen-desc">5 biomes — Meadow, Grove, Cavern, Depths, Summit — with progress tracking</div>
+        <span class="badge cyan">NAVIGATION</span>
+      </div>
+    </a>
+
+    <a class="screen-card" href="shop.html">
+      <div class="preview-wrapper">
+        <iframe class="screen-preview" src="shop.html" loading="lazy"></iframe>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Cosmetics Shop</div>
+        <div class="screen-desc">Firefly skins, trails, themes — coin & gem currency system</div>
+        <span class="badge violet">MONETIZATION</span>
+      </div>
+    </a>
+
+    <a class="screen-card" href="level-complete.html">
+      <div class="preview-wrapper">
+        <iframe class="screen-preview" src="level-complete.html" loading="lazy"></iframe>
+      </div>
+      <div class="screen-info">
+        <div class="screen-name">Level Complete</div>
+        <div class="screen-desc">Star rating, stats, coin reward, rewarded ad placement, share</div>
+        <span class="badge coral">RETENTION</span>
+      </div>
+    </a>
+
+  </div>
+
+  <footer>
+    Arrow Dash — Cosmic Space Theme &middot; April 2026
+  </footer>
+</div>
+
+</body>
+</html>

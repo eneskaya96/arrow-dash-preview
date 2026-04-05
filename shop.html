@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Arrow Dash — Cosmetics Shop</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0A1118;
+    --bg-mid: #121E2B;
+    --surface: #1A2F38;
+    --text-primary: #E8EDF2;
+    --text-secondary: #8B99A8;
+    --gold: #FFD666;
+    --emerald: #4AE68A;
+    --cyan: #5CE0D8;
+    --coral: #FF6B9D;
+    --violet: #A78BFA;
+    --orange: #FF8C42;
+    --red: #FF6B6B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 56px 20px 14px;
+    background: var(--bg-mid);
+    z-index: 10;
+    position: relative;
+  }
+
+  .back-btn svg {
+    width: 24px; height: 24px;
+    fill: none; stroke: var(--text-primary); stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .header-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  .currency-row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .currency {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  .currency.coins { color: var(--gold); }
+  .currency.gems { color: var(--violet); }
+
+  .currency-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .currency.coins .currency-icon { background: var(--gold); box-shadow: 0 0 6px rgba(255, 214, 102, 0.3); }
+  .currency.gems .currency-icon {
+    background: var(--violet);
+    box-shadow: 0 0 6px rgba(167, 139, 250, 0.3);
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    border-radius: 0;
+  }
+
+  /* Category tabs */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    padding: 14px 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--bg-mid);
+    border-bottom: 1px solid rgba(42, 63, 72, 0.3);
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1.5px solid transparent;
+  }
+
+  .tab.active {
+    background: var(--gold);
+    color: var(--bg-dark);
+  }
+
+  .tab.inactive {
+    background: var(--surface);
+    color: var(--text-secondary);
+  }
+
+  .tab.premium {
+    background: transparent;
+    border-color: var(--violet);
+    color: var(--violet);
+  }
+
+  /* Scrollable content */
+  .scroll-content {
+    height: calc(100% - 200px);
+    overflow-y: auto;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* Featured banner */
+  .featured-banner {
+    background: linear-gradient(135deg, var(--bg-mid) 0%, #1A1530 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(167, 139, 250, 0.2);
+    box-shadow: 0 0 30px rgba(167, 139, 250, 0.06);
+  }
+
+  .featured-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    background: var(--violet);
+    color: white;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .featured-name {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .featured-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+  }
+
+  .featured-preview {
+    width: 100%;
+    height: 100px;
+    background: rgba(10, 17, 24, 0.5);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Crystal moth illustration */
+  @keyframes moth-glow {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(92, 224, 216, 0.4)); }
+    50% { filter: drop-shadow(0 0 16px rgba(92, 224, 216, 0.7)); }
+  }
+
+  .moth {
+    width: 60px;
+    height: 40px;
+    position: relative;
+    animation: moth-glow 3s ease-in-out infinite;
+  }
+
+  .moth-body {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 20px;
+    background: var(--cyan);
+    border-radius: 3px;
+  }
+
+  .moth-wing {
+    position: absolute;
+    top: 5px;
+    width: 24px;
+    height: 30px;
+    border-radius: 50% 50% 30% 30%;
+    opacity: 0.7;
+  }
+  .moth-wing.left {
+    left: 2px;
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 100%);
+    transform: rotate(-15deg);
+  }
+  .moth-wing.right {
+    right: 2px;
+    background: linear-gradient(225deg, var(--cyan) 0%, var(--violet) 100%);
+    transform: rotate(15deg);
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 4px 2px rgba(255, 255, 255, 0.3);
+    animation: twinkle 2s ease-in-out infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .featured-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .featured-price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--violet);
+  }
+
+  .get-btn {
+    padding: 10px 28px;
+    border-radius: 20px;
+    background: var(--violet);
+    color: white;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 0 16px rgba(167, 139, 250, 0.3);
+  }
+  .get-btn:hover { transform: scale(1.05); }
+
+  /* Item grid */
+  .item-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .item-card {
+    background: var(--bg-mid);
+    border-radius: 16px;
+    padding: 14px;
+    position: relative;
+    transition: transform 0.2s;
+    border: 1.5px solid transparent;
+  }
+  .item-card:hover { transform: scale(1.03); }
+
+  .item-card.equipped {
+    border-color: rgba(74, 230, 138, 0.3);
+  }
+  .item-card.premium-item {
+    border-color: rgba(167, 139, 250, 0.2);
+  }
+  .item-card.locked-item {
+    opacity: 0.5;
+  }
+
+  .item-preview {
+    width: 100%;
+    height: 80px;
+    background: rgba(10, 17, 24, 0.5);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Firefly illustrations */
+  .firefly-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .firefly-preview.gold-ff {
+    background: var(--gold);
+    box-shadow: 0 0 12px 6px rgba(255, 214, 102, 0.3);
+  }
+  .firefly-preview.emerald-ff {
+    background: var(--emerald);
+    box-shadow: 0 0 12px 6px rgba(74, 230, 138, 0.3);
+  }
+  .firefly-preview.coral-ff {
+    background: var(--coral);
+    box-shadow: 0 0 12px 6px rgba(255, 107, 157, 0.3);
+  }
+  .firefly-preview.violet-ff {
+    background: var(--violet);
+    box-shadow: 0 0 12px 6px rgba(167, 139, 250, 0.3);
+  }
+  .firefly-preview.cyan-ff {
+    background: var(--cyan);
+    box-shadow: 0 0 12px 6px rgba(92, 224, 216, 0.3);
+  }
+  .firefly-preview.orange-ff {
+    background: var(--orange);
+    box-shadow: 0 0 12px 6px rgba(255, 140, 66, 0.3);
+    opacity: 0.4;
+  }
+
+  /* Wing hints for dragonfly */
+  .dragonfly-wings {
+    position: absolute;
+    top: -4px;
+    width: 36px;
+    height: 12px;
+  }
+  .dragonfly-wings::before,
+  .dragonfly-wings::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid;
+    top: 0;
+    opacity: 0.4;
+  }
+  .dragonfly-wings.em::before { left: 0; border-color: var(--emerald); }
+  .dragonfly-wings.em::after { right: 0; border-color: var(--emerald); }
+
+  /* Wisps for will-o-wisp */
+  .wisp-trail {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 12px;
+    background: linear-gradient(to bottom, var(--coral), transparent);
+    border-radius: 1px;
+    opacity: 0.5;
+  }
+
+  /* Star particles for sprite */
+  .star-particles {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+  }
+
+  .item-name {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .item-price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+  }
+  .item-price.coin-price { color: var(--gold); }
+  .item-price.gem-price { color: var(--violet); }
+
+  .equipped-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: rgba(74, 230, 138, 0.15);
+    color: var(--emerald);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .lock-badge {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .price-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .price-dot.coin { background: var(--gold); }
+  .price-dot.gem {
+    background: var(--violet);
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    border-radius: 0;
+  }
+
+  /* Restore link */
+  .restore-link {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="back-btn">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+  </div>
+  <div class="header-title">Shop</div>
+  <div class="currency-row">
+    <div class="currency coins">
+      <span class="currency-icon"></span>
+      <span>1,250</span>
+    </div>
+    <div class="currency gems">
+      <span class="currency-icon"></span>
+      <span>45</span>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active">Fireflies</div>
+  <div class="tab inactive">Trails</div>
+  <div class="tab inactive">Themes</div>
+  <div class="tab premium">Bundles</div>
+</div>
+
+<div class="scroll-content">
+
+  <!-- Featured Banner -->
+  <div class="featured-banner">
+    <div class="featured-badge">LIMITED EDITION</div>
+    <div class="featured-name">Crystal Moth</div>
+    <div class="featured-desc">A luminous moth with crystalline wings from the deep caverns</div>
+    <div class="featured-preview">
+      <div class="moth">
+        <div class="moth-wing left"></div>
+        <div class="moth-body"></div>
+        <div class="moth-wing right"></div>
+      </div>
+      <div class="sparkle" style="top:20px;left:30%;animation-delay:0s"></div>
+      <div class="sparkle" style="top:60px;right:25%;animation-delay:0.7s"></div>
+      <div class="sparkle" style="top:40px;left:60%;animation-delay:1.4s"></div>
+      <div class="sparkle" style="bottom:25px;left:40%;animation-delay:0.3s"></div>
+    </div>
+    <div class="featured-bottom">
+      <div class="featured-price">
+        <span class="currency-icon" style="width:14px;height:14px;background:var(--violet);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);border-radius:0;display:inline-block"></span>
+        <span>120</span>
+      </div>
+      <button class="get-btn">GET</button>
+    </div>
+  </div>
+
+  <!-- Item Grid -->
+  <div class="item-grid">
+
+    <!-- Item 1: Golden Firefly (Equipped) -->
+    <div class="item-card equipped">
+      <div class="item-preview">
+        <div class="firefly-preview gold-ff"></div>
+      </div>
+      <div class="item-name">Golden Firefly</div>
+      <div class="equipped-badge">EQUIPPED</div>
+    </div>
+
+    <!-- Item 2: Emerald Dragonfly -->
+    <div class="item-card">
+      <div class="item-preview">
+        <div class="firefly-preview emerald-ff" style="position:relative">
+          <div class="dragonfly-wings em"></div>
+        </div>
+      </div>
+      <div class="item-name">Emerald Dragonfly</div>
+      <div class="item-price coin-price">
+        <span class="price-dot coin"></span>
+        <span>500</span>
+      </div>
+    </div>
+
+    <!-- Item 3: Pink Will-o-Wisp -->
+    <div class="item-card">
+      <div class="item-preview">
+        <div class="firefly-preview coral-ff" style="position:relative">
+          <div class="wisp-trail"></div>
+        </div>
+      </div>
+      <div class="item-name">Pink Will-o-Wisp</div>
+      <div class="item-price coin-price">
+        <span class="price-dot coin"></span>
+        <span>800</span>
+      </div>
+    </div>
+
+    <!-- Item 4: Star Sprite (Premium) -->
+    <div class="item-card premium-item">
+      <div class="item-preview">
+        <div class="firefly-preview violet-ff"></div>
+      </div>
+      <div class="item-name">Star Sprite</div>
+      <div class="item-price gem-price">
+        <span class="price-dot gem"></span>
+        <span>80</span>
+      </div>
+    </div>
+
+    <!-- Item 5: Cyan Jellyfish -->
+    <div class="item-card">
+      <div class="item-preview">
+        <div class="firefly-preview cyan-ff"></div>
+      </div>
+      <div class="item-name">Cyan Jellyfish</div>
+      <div class="item-price coin-price">
+        <span class="price-dot coin"></span>
+        <span>1,000</span>
+      </div>
+    </div>
+
+    <!-- Item 6: Sunset Moth (Locked) -->
+    <div class="item-card locked-item">
+      <div class="item-preview">
+        <div class="firefly-preview orange-ff"></div>
+      </div>
+      <div class="item-name">Sunset Moth</div>
+      <div class="lock-badge">&#128274; Unlock at World 3</div>
+    </div>
+
+  </div>
+
+  <div class="restore-link">Restore Purchases</div>
+
+</div>
+
+</body>
+</html>

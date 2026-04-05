@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Arrow Dash — World Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Inter:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0A1118;
+    --bg-mid: #121E2B;
+    --surface: #1A2F38;
+    --text-primary: #E8EDF2;
+    --text-secondary: #8B99A8;
+    --gold: #FFD666;
+    --emerald: #4AE68A;
+    --cyan: #5CE0D8;
+    --coral: #FF6B9D;
+    --violet: #A78BFA;
+    --red: #FF6B6B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    width: 393px;
+    height: 852px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 56px 20px 16px;
+    background: var(--bg-mid);
+    position: relative;
+    z-index: 10;
+  }
+
+  .back-btn svg {
+    width: 24px; height: 24px;
+    fill: none; stroke: var(--text-primary); stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .header-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  .star-count {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--gold);
+  }
+
+  .star-icon {
+    font-size: 16px;
+  }
+
+  /* Scrollable content */
+  .scroll-content {
+    height: calc(100% - 150px);
+    overflow-y: auto;
+    padding: 16px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* World Card */
+  .world-card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--bg-mid);
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .world-card:hover { transform: scale(1.01); }
+
+  .world-card.active {
+    border: 1.5px solid;
+  }
+  .world-card.active.gold-border { border-color: rgba(255, 214, 102, 0.3); box-shadow: 0 0 20px rgba(255, 214, 102, 0.08); }
+  .world-card.active.emerald-border { border-color: rgba(74, 230, 138, 0.2); }
+
+  .world-card.locked {
+    opacity: 0.55;
+  }
+
+  /* Illustration strip */
+  .world-illustration {
+    height: 100px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .illust-meadow {
+    background: linear-gradient(180deg, #0E1720 0%, #121E2B 60%, #1A2510 100%);
+  }
+  .illust-meadow::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to top, var(--bg-mid), transparent);
+  }
+
+  /* Meadow elements */
+  .meadow-moon {
+    position: absolute;
+    top: 12px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #E8EDF2 0%, #C8D0DA 30%, transparent 70%);
+    opacity: 0.6;
+    box-shadow: 0 0 20px rgba(232, 237, 242, 0.1);
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .meadow-firefly {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 6px 3px rgba(255, 214, 102, 0.3);
+    animation: twinkle 2s ease-in-out infinite;
+  }
+
+  .illust-grove {
+    background: linear-gradient(180deg, #0A1810 0%, #0E1F15 60%, #121E2B 100%);
+  }
+  .illust-grove::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 30px;
+    background: linear-gradient(to top, var(--bg-mid), transparent);
+  }
+
+  .grove-vine {
+    position: absolute;
+    width: 2px;
+    background: var(--emerald);
+    opacity: 0.3;
+    border-radius: 1px;
+    box-shadow: 0 0 4px rgba(74, 230, 138, 0.3);
+  }
+
+  .illust-cavern {
+    background: linear-gradient(180deg, #0A0E18 0%, #10152A 60%, #121E2B 100%);
+  }
+  .illust-cavern::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 30px;
+    background: linear-gradient(to top, var(--bg-mid), transparent);
+  }
+
+  .crystal {
+    position: absolute;
+    background: var(--cyan);
+    opacity: 0.2;
+    clip-path: polygon(50% 0%, 80% 40%, 65% 100%, 35% 100%, 20% 40%);
+    box-shadow: 0 0 8px rgba(92, 224, 216, 0.2);
+  }
+
+  .illust-coral {
+    background: linear-gradient(180deg, #0A0E18 0%, #18101E 60%, #121E2B 100%);
+  }
+  .illust-coral::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 30px;
+    background: linear-gradient(to top, var(--bg-mid), transparent);
+  }
+
+  .illust-aurora {
+    background: linear-gradient(180deg, #0A0E18 0%, #150E20 40%, #121E2B 100%);
+  }
+  .illust-aurora::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 30px;
+    background: linear-gradient(to top, var(--bg-mid), transparent);
+  }
+
+  .aurora-band {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(90deg, transparent 0%, rgba(167, 139, 250, 0.1) 20%, rgba(74, 230, 138, 0.08) 50%, rgba(92, 224, 216, 0.1) 80%, transparent 100%);
+    filter: blur(8px);
+  }
+
+  /* Card info */
+  .world-info {
+    padding: 16px 20px 20px;
+  }
+
+  .world-name {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .world-name.gold { color: var(--gold); }
+  .world-name.emerald { color: var(--emerald); }
+  .world-name.cyan { color: var(--cyan); }
+  .world-name.coral { color: var(--coral); }
+  .world-name.violet { color: var(--violet); }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .progress-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .star-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(42, 63, 72, 0.5);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease;
+  }
+
+  .progress-fill.gold { background: var(--gold); box-shadow: 0 0 8px rgba(255, 214, 102, 0.3); }
+  .progress-fill.emerald { background: var(--emerald); box-shadow: 0 0 8px rgba(74, 230, 138, 0.3); }
+
+  .play-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: none;
+  }
+  .play-pill:hover { transform: scale(1.05); }
+
+  .play-pill.gold { background: var(--gold); color: var(--bg-dark); }
+  .play-pill.emerald { background: var(--emerald); color: var(--bg-dark); }
+
+  /* Locked state */
+  .lock-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .lock-icon {
+    font-size: 14px;
+    opacity: 0.6;
+  }
+
+  .star-req {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    opacity: 0.7;
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: var(--bg-mid);
+    border-top: 1px solid rgba(42, 63, 72, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: 16px;
+    z-index: 20;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .nav-item svg {
+    width: 24px; height: 24px;
+    fill: none; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .nav-item.active svg { stroke: var(--gold); }
+  .nav-item.inactive svg { stroke: var(--text-secondary); }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .nav-item.active .nav-label { color: var(--gold); }
+  .nav-item.inactive .nav-label { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="back-btn">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+  </div>
+  <div class="header-title">Worlds</div>
+  <div class="star-count">
+    <span class="star-icon">&#9733;</span>
+    <span>87 / 200</span>
+  </div>
+</div>
+
+<div class="scroll-content">
+
+  <!-- World 1: Moonlit Meadow -->
+  <div class="world-card active gold-border">
+    <div class="world-illustration illust-meadow">
+      <div class="meadow-moon"></div>
+      <div class="meadow-firefly" style="top:25px;left:50px;animation-delay:0s"></div>
+      <div class="meadow-firefly" style="top:40px;left:140px;animation-delay:0.8s"></div>
+      <div class="meadow-firefly" style="top:55px;left:250px;animation-delay:1.6s"></div>
+      <div class="meadow-firefly" style="top:30px;left:320px;animation-delay:0.4s"></div>
+      <div class="meadow-firefly" style="top:60px;left:80px;animation-delay:2s"></div>
+    </div>
+    <div class="world-info">
+      <div class="world-name gold">Moonlit Meadow</div>
+      <div class="progress-row">
+        <span class="progress-text">28 / 40 Levels</span>
+        <span class="star-text" style="color:var(--gold)">&#9733; 67 / 120</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill gold" style="width:70%"></div>
+      </div>
+      <button class="play-pill gold">PLAY</button>
+    </div>
+  </div>
+
+  <!-- World 2: Enchanted Grove -->
+  <div class="world-card active emerald-border">
+    <div class="world-illustration illust-grove">
+      <div class="grove-vine" style="left:40px;top:10px;height:60px"></div>
+      <div class="grove-vine" style="left:120px;top:5px;height:70px"></div>
+      <div class="grove-vine" style="right:60px;top:15px;height:50px"></div>
+      <div class="grove-vine" style="right:150px;top:0;height:65px"></div>
+      <div class="meadow-firefly" style="top:35px;left:80px;animation-delay:0.5s;background:var(--emerald);box-shadow:0 0 6px 3px rgba(74,230,138,0.3)"></div>
+      <div class="meadow-firefly" style="top:50px;left:220px;animation-delay:1.2s;background:var(--emerald);box-shadow:0 0 6px 3px rgba(74,230,138,0.3)"></div>
+    </div>
+    <div class="world-info">
+      <div class="world-name emerald">Enchanted Grove</div>
+      <div class="progress-row">
+        <span class="progress-text">12 / 40 Levels</span>
+        <span class="star-text" style="color:var(--emerald)">&#9733; 20 / 120</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill emerald" style="width:30%"></div>
+      </div>
+      <button class="play-pill emerald">PLAY</button>
+    </div>
+  </div>
+
+  <!-- World 3: Crystal Cavern (LOCKED) -->
+  <div class="world-card locked">
+    <div class="world-illustration illust-cavern">
+      <div class="crystal" style="left:50px;top:20px;width:20px;height:50px"></div>
+      <div class="crystal" style="left:130px;top:30px;width:15px;height:40px"></div>
+      <div class="crystal" style="right:80px;top:15px;width:25px;height:55px"></div>
+      <div class="crystal" style="right:40px;top:35px;width:12px;height:35px"></div>
+    </div>
+    <div class="world-info">
+      <div class="world-name cyan">Crystal Cavern</div>
+      <div class="lock-info">
+        <span class="lock-icon">&#128274;</span>
+        <span>Complete Enchanted Grove to unlock</span>
+      </div>
+      <div class="star-req">&#9733; 80 stars needed</div>
+    </div>
+  </div>
+
+  <!-- World 4: Coral Depths (LOCKED) -->
+  <div class="world-card locked">
+    <div class="world-illustration illust-coral">
+    </div>
+    <div class="world-info">
+      <div class="world-name coral">Coral Depths</div>
+      <div class="lock-info">
+        <span class="lock-icon">&#128274;</span>
+        <span>Complete Crystal Cavern to unlock</span>
+      </div>
+      <div class="star-req">&#9733; 120 stars needed</div>
+    </div>
+  </div>
+
+  <!-- World 5: Aurora Summit (LOCKED) -->
+  <div class="world-card locked">
+    <div class="world-illustration illust-aurora">
+      <div class="aurora-band"></div>
+    </div>
+    <div class="world-info">
+      <div class="world-name violet">Aurora Summit</div>
+      <div class="lock-info">
+        <span class="lock-icon">&#128274;</span>
+        <span>Complete Coral Depths to unlock</span>
+      </div>
+      <div class="star-req">&#9733; 160 stars needed</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+    <span class="nav-label">Worlds</span>
+  </div>
+  <div class="nav-item inactive">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="nav-label">Daily</span>
+  </div>
+  <div class="nav-item inactive">
+    <svg viewBox="0 0 24 24"><polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9"/></svg>
+    <span class="nav-label">Shop</span>
+  </div>
+</div>
+
+</body>
+</html>
